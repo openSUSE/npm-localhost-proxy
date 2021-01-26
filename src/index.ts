@@ -91,10 +91,9 @@ function printHelpInformation() {
 	console.log("--help    prints this help message");
 }
 
-function mainEntryFunction(): number {
+function mainEntryFunction(): void {
 	if (argv.includes("--help")) {
 		printHelpInformation();
-		return 0;
 	}
 
 	const registry = new Registry();
@@ -112,11 +111,9 @@ function mainEntryFunction(): number {
 		return service.stop()
 	})
 	.catch(msg => {
-		console.log("An error occured: " + msg);
+		console.log("An error occurred: " + msg);
 		process.exit(1);
 	});
-
-	return 0;
 }
 
 if (require.main === module)
