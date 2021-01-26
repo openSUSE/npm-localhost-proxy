@@ -75,13 +75,13 @@ function configureNpmToSpecificLocalhostPort(service:Service, port:number|Promis
 function runNpmInstall(): Promise<void> {
 	if (install_options.length === 0) {
 		console.log("npm install skipped");
-		return Promise.reject();
+		return Promise.reject("npm install skipped");
 	}
 
 	return new Promise((accept, reject) => {
 		spawn("/usr/bin/npm", install_options, {stdio: 'inherit'})
 		.on("exit", (code) => {
-			code === 0 ? accept() : reject();
+			code === 0 ? accept() : reject("NPM returned code: " + code);
 		});
 	});
 }
@@ -110,6 +110,10 @@ function mainEntryFunction(): number {
 	.then(() => {
 		console.log("npm done. Shutting down proxy");
 		return service.stop()
+	})
+	.catch(msg => {
+		console.log("An error occured: " + msg);
+		process.exit(1);
 	});
 
 	return 0;
