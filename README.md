@@ -6,8 +6,8 @@ Certain build environments like the [Open Build Service](https://build.opensuse.
 * it runs `npm` with any parameters and then shuts down
 
 - [Installation](#installation)
-	- [From Release](#from-release)
-	- [From Git](#from-git)
+  - [From Release](#from-release)
+  - [From Git](#from-git)
 - [Usage](#usage)
 - [Open Build Service](#open-build-service)
 
@@ -17,8 +17,10 @@ Certain build environments like the [Open Build Service](https://build.opensuse.
 `npm install --production`
 
 ## From Git
-`npm install`
-`npm run build`
+```
+npm install
+npm run build
+```
 
 At this point the application is in `dist/` and can be used as from a tagged released version
 
@@ -26,9 +28,21 @@ At this point the application is in `dist/` and can be used as from a tagged rel
 
 From the directory of an application where you want to run `npm install`,
 
-	NPM_TGZ = (list of all NPM tgz tarballs or directory containing them)
-	node ${path_to_this_app}/dist ${NPM_TGZ} install ${npm_install_param}
+```
+NM_TGZ = (list of all NPM tgz tarballs or directories containing them)
+node $path_to_this_app/dist ${NPM_TGZ} $npm_params
+```
+All parameters that are not directories or NPM tarballs are passed as
+parameters to NPM.
+
+When running under OBS with `BuildRequires: local-npm-registry`, where
+all dependencies are provides are tarballs in the `%_sourcedir`, then
+you can just do,
+
+```
+local-npm-registry %{_sourcedir} install --also=dev
+```
 
 # Open Build Service
 
-You can find this in `devel:languages:javascript`
+You can find this package in `devel:languages:javascript`
