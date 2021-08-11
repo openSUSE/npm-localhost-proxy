@@ -43,6 +43,18 @@ you can just do,
 local-npm-registry %{_sourcedir} install --also=dev
 ```
 
+This will result in registry parsing all tarballs in `%_sourcedir` and
+everything else is passed on to `npm` resulting in command-line on the
+child process,
+
+```
+npm install --also=dev
+```
+
+This then connects to the localhost service and can only resolve the
+provided NPM packages.
+
+
 # Open Build Service
 
 You can find this package in `devel:languages:javascript`
