@@ -132,8 +132,8 @@ export class Service {
 			}
 			catch {
 				console.log("request: (ERROR)" + req.url);
-				res.writeHead(500);
-				res.end("error");
+				res.writeHead(404);
+				res.end("Not found");
 			}
 		});
 
