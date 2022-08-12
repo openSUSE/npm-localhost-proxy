@@ -65,7 +65,7 @@ function setupServerAndGetPort(service:Service, registry:Registry): Promise<numb
 
 function configureNpmToSpecificLocalhostPort(service:Service, port:number|Promise<number>): Promise<void> {
 	return new Promise((accept, reject) => {
-		spawn("/usr/bin/npm", ['config', 'set', 'registry', service.url.toString()], {stdio: 'inherit'})
+		spawn("npm", ['config', 'set', 'registry', service.url.toString()], {stdio: 'inherit'})
 		.on("exit", (code) => {
 			code === 0 ? accept() : reject();
 		});
@@ -79,7 +79,7 @@ function runNpmInstall(): Promise<void> {
 	}
 
 	return new Promise((accept, reject) => {
-		spawn("/usr/bin/npm", install_options, {stdio: 'inherit'})
+		spawn("npm", install_options, {stdio: 'inherit'})
 		.on("exit", (code) => {
 			code === 0 ? accept() : reject("NPM returned code: " + code);
 		});
