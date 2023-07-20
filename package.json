@@ -7,11 +7,11 @@
     "doc": "README.md"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.16",
-    "@types/ssri": "^7.1.0",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.1.2"
+    "@types/jest": "^29.0.0",
+    "@types/ssri": "^7.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.1.2"
   },
   "scripts": {
     "build": "tsc --build",
@@ -22,6 +22,6 @@
   "author": "SUSE LLC",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "ssri": "^6.0.1"
+    "ssri": "^10.0.1"
   }
 }

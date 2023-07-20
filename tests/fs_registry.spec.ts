@@ -59,15 +59,15 @@ describe("TarballRegistryBackend tests", function() {
 			return emitter;
 		});
 
-		readStreamMock = jest.spyOn(fs, "createReadStream").mockImplementation((path) => {
-			const s = new fs.ReadStream();
-			s.path = path.toString();
+		readStreamMock = jest.spyOn(fs, "createReadStream").mockImplementation((path, options?) => {
+			const s = new Readable
+			s['path'] = path
 			nextTick(() => {
 				s.emit("data", "test123TEST");
 				s.emit("end");
 				s.emit("close");
 			});
-			return s;
+			return <fs.ReadStream>s;
 		});
 	});
 

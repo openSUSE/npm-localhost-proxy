@@ -20,7 +20,6 @@
 import { DirRegistryBackend } from '../src/dir_registry';
 import { readdir } from 'fs';
 import { TarballRegistryBackend } from '../src/fs_registry';
-import { mocked } from 'ts-jest/utils';
 
 const { Dirent } = jest.requireActual('fs');
 
@@ -41,7 +40,7 @@ describe("DirRegistry tests", function() {
 			return Promise.reject('baddiness');
 		});
 
-		mocked(readdir).mockImplementation((filename, options, cb) => {
+		jest.mocked(readdir).mockImplementation((filename, options, cb) => {
 			if (!options['withFileTypes']) {
 				cb(new Error("NOT CALLED WITH OPTION withFileTypes"), []);
 				return;

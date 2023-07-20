@@ -28,6 +28,9 @@ export class TarballRegistryBackend implements registry.RegistryBackend
 	protected tar_cmd_opts: string = 'zxfO';
 
 	public extractPkgJson(filename: string): Promise<registry.PkgJson[]> {
+		if (!filename)
+			return Promise.reject('filename is null?');
+
 		return IntegrityFromStream(fs.createReadStream(filename))
 		.then(integrity_hash => {
 			return integrity_hash.toString();

@@ -62,9 +62,9 @@ describe("Service setup tests", function() {
 		expect(() => new Service({url: new URL("http://localhost")})).not.toThrowError("invalid port");
 		expect(() => new Service({url: new URL("http://localhost:34")})).toThrowError("invalid port");
 		expect(() => new Service({url: new URL("ftp://local:1234")})).toThrow("invalid protocol");
-		expect(() => new Service({url: new URL("")})).toThrowError("Invalid URL: ");
-		expect(() => new Service({url: null})).toThrowError("Invalid URL: ");
-		expect(() => new Service({url: new URL("fofofofo")})).toThrowError("Invalid URL: fofofofo");
+		expect(() => new Service({url: new URL("")})).toThrowError("Invalid URL");
+		expect(() => new Service({url: null})).toThrowError("Invalid URL");
+		expect(() => new Service({url: new URL("fofofofo")})).toThrowError("Invalid URL");
 
 		expect(() => new Service({url: new URL("http://badhostname:5443")})).not.toThrowError();
 		expect(() => new Service({url: new URL("http://goodhostname:3423")})).not.toThrowError();
@@ -94,8 +94,9 @@ describe("Service setup tests", function() {
 		const service = new TestService({url: new URL("http://test:3444" )});
 		const error_string = "error string here";
 
-		jest.spyOn(service.HttpServer, "close").mockImplementationOnce(function(cb) {
-			process.nextTick(() => cb(new Error(error_string)));
+		jest.spyOn(service.HttpServer, "close").mockImplementationOnce((cb) => {
+			if (cb)
+				process.nextTick(() => cb(new Error(error_string)));
 			return this;
 		});
 
@@ -107,7 +108,8 @@ describe("Service setup tests", function() {
 		const service = new TestService({url: new URL("http://test:3444" )});
 
 		jest.spyOn(service.HttpServer, "close").mockImplementationOnce(function(cb) {
-			process.nextTick(() => cb());
+			if (cb)
+				process.nextTick(() => cb());
 			return this;
 		});
 
@@ -140,6 +142,9 @@ describe("server request processing", function() {
 				if (cb)
 					cb(service.url.toString());
 
+				if (!override_options)
+					override_options = {}
+
 				const options = makeRequestOptions({
 					hostname: 'localhost',
 					port: port,
@@ -164,7 +169,9 @@ describe("server request processing", function() {
 						});
 					}
 					else {
-						reject(res.statusCode + res.statusMessage);
+						let code = res.statusCode ? res.statusCode : 0;
+						let msg = res.statusMessage ? res.statusMessage : ""
+						reject(code + msg);
 						service.stop();
 					}
 				});
