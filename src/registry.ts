@@ -18,6 +18,7 @@
 */
 
 import { URL } from 'url';
+import { baseTarballName } from './utils';
 
 export type PkgJsonRW = {
 	name: string,
@@ -82,7 +83,7 @@ export class Registry {
 		for (let i = 0; i < this.pkgs.length; i = i + 1) {
 			if (this.pkgs[i].name === pkg_name) {
 				const pkg = JSON.parse(JSON.stringify(this.pkgs[i]));
-				pkg['dist']['tarball'] = this.requestHandler.url + pkg.dist.tarball;
+				pkg['dist']['tarball'] = this.requestHandler.url + '-/' + baseTarballName(pkg.dist.tarball);
 
 				obj.versions[pkg.version] = pkg;
 			}
@@ -144,7 +145,10 @@ export class Registry {
 		return backend_processors;
 	}
 
-	public isRegistered(path: string): boolean {
-		return this.pkgs.filter(json => json.dist.tarball === "-/" + path).length === 1;
+	public archiveFile(file: string): (string|null) {
+		const files = this.pkgs.filter(json => (baseTarballName(json.dist.tarball) === file))
+		if (files.length !== 1)
+			return null;
+		return files[0].dist.tarball.substring(2);
 	}
 };

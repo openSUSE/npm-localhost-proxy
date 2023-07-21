@@ -238,7 +238,7 @@ describe("server request processing", function() {
 		return makeRequest("/nothing/ver", b => base_url=b).then(res => {
 			expect(res).toStrictEqual({
 				"dist": {
-					"tarball": base_url + "test",
+					"tarball": base_url + "-/test",
 				},
 				"name": "nothing",
 				"version": "ver",
@@ -251,7 +251,7 @@ describe("server request processing", function() {
 
 		return makeRequest("/@scope%2fbadthings/ver", b => base_url=b).then(res => {
 			expect(res).toStrictEqual({
-					"dist": { "tarball": base_url + "bad2" },
+					"dist": { "tarball": base_url + "-/bad2" },
 					"name": "@scope/badthings",
 					"version": "ver"
 			});

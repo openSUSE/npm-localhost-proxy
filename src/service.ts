@@ -49,10 +49,10 @@ export class Service {
 
 		if (split[0] === '-') {
 			split.shift();
-			// console.log("archive joiner: " + split.join('/'))
+			console.log("archive joiner: " + split.join('/'))
 			return {
 				type: 'archive',
-				package: '/' + split.join('/'),
+				package: split.join('/'),
 			}
 		}
 
@@ -117,11 +117,12 @@ export class Service {
 						break;
 					}
 					case 'archive': {
-						if (registry.isRegistered(<string>req_type.package)) {
+						const archive_path = registry.archiveFile(<string>req_type.package)
+						if (archive_path) {
 							res.writeHead(200, {
 								'Content-Type': 'application/x-compressed-tar'
 							});
-							fs.createReadStream(<string>req_type.package).pipe(res);
+							fs.createReadStream(archive_path).pipe(res);
 						}
 						else {
 							console.log("request: (archive not found)" + req.url);
