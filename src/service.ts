@@ -49,7 +49,6 @@ export class Service {
 
 		if (split[0] === '-') {
 			split.shift();
-			console.log("archive joiner: " + split.join('/'))
 			return {
 				type: 'archive',
 				package: split.join('/'),
