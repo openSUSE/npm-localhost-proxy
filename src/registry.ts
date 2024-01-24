@@ -96,9 +96,17 @@ export class Registry {
 	}
 
 	public fetchPkgVersion(pkg_name: string, version: string): Object {
-		let obj = this.fetchVersions(pkg_name);
-		if (!Object.keys(obj['versions']).includes(version))
-			throw new Error("not found");
+		const obj = this.fetchVersions(pkg_name);
+		const versions = Object.keys(obj['versions']).sort()
+		if (!versions.includes(version)) {
+			const non_standard_version = version.match(/[^\d\.]/)
+			if (non_standard_version == null)
+				throw new Error("not found");
+
+			const new_version = versions[versions.length - 1]
+			console.warn("pkg: %s is asking for non-standard version '%s'. Fallback to version %s", pkg_name, version, new_version);
+			return obj['versions'][new_version];
+		}
 
 		return obj['versions'][version];
 	}

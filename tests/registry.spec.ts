@@ -141,7 +141,7 @@ it("should register an empty package and return it as a valid JSON", function ()
 			}
 		});
 
-		expect(registry.fetchPkgVersion('empty-npm-package', '1.0.0')).toStrictEqual({
+		const empty_npm_package_1_0_0_json = {
 			"author": "",
 			"description": "",
 			"dist": {
@@ -155,7 +155,9 @@ it("should register an empty package and return it as a valid JSON", function ()
 				"test": "echo \"Error: no test specified\" && exit 1",
 			},
 			"version": "1.0.0",
-		});
+		}
+		expect(registry.fetchPkgVersion('empty-npm-package', '1.0.0')).toStrictEqual(empty_npm_package_1_0_0_json);
+		expect(registry.fetchPkgVersion('empty-npm-package', 'latest')).toStrictEqual(empty_npm_package_1_0_0_json);
 
 		testsForBogusNames();
 	});
