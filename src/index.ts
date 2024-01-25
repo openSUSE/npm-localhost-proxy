@@ -34,7 +34,9 @@ function registerTarballsFromCommandline(registry:Registry): Promise<number> {
 	for (let i=0; i<concurrent_processes; i++)
 		processes.push(Promise.resolve(0));
 	for (let i=2; i<argv.length; ++i) {
-		processes[i%concurrent_processes] = processes[i%concurrent_processes].then((processed) => registry.register(argv[i]).then(n => {
+		const fn = argv[i];
+
+		processes[i%concurrent_processes] = processes[i%concurrent_processes].then((processed) => registry.register(fn).then(n => {
 			if (n == 0)
 				install_options.push(argv[i]);
 
@@ -91,9 +93,10 @@ function printHelpInformation() {
 	console.log("--help    prints this help message");
 }
 
-function mainEntryFunction(): void {
+function mainEntryFunction(): Promise<void> {
 	if (argv.includes("--help")) {
 		printHelpInformation();
+		return;
 	}
 
 	const registry = new Registry();
@@ -102,7 +105,7 @@ function mainEntryFunction(): void {
 	const service = new Service({url: new URL("http://localhost")});
 	registry.serviceProvider = service;
 
-	registerTarballsFromCommandline(registry)
+	return registerTarballsFromCommandline(registry)
 	.then(() => setupServerAndGetPort(service, registry))
 	.then(port => configureNpmToSpecificLocalhostPort(service, port))
 	.then(() => runNpmInstall())

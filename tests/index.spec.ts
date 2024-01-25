@@ -25,25 +25,25 @@ function setArgsAndReturnOldArgs(args:string[]) {
 	while (process.argv.length > 0)
 		process.argv.pop();
 	while(args.length > 0)
-		process.argv.push(args.shift());
+		process.argv.push(args.shift() || '');
 	return old_args;
 }
 
-describe("commandline interface tests", function() {
-	it.skip("displays usage information when called with --help", function() {
-		let msg = '';
+it("displays usage information when called with --help", async function() {
+	let msg = '';
 
-		const old_opts = setArgsAndReturnOldArgs(["index.js", "--help"]);
-		const console_log = jest.spyOn(console, "log").mockImplementation((message) => {
-			msg += message;
-		});
+	const old_opts = setArgsAndReturnOldArgs(["index.js", "--help"]);
+	const console_log = jest.spyOn(console, "log").mockImplementation((message) => {
+		msg += message;
+	});
 
-		mainEntryFunction();
+	await mainEntryFunction();
 
-		setArgsAndReturnOldArgs(old_opts);
-		console_log.mockRestore();
+	setArgsAndReturnOldArgs(old_opts);
+	console_log.mockRestore();
 
-		expect(msg).toContain("--help");
-		expect(msg).toContain("help message");
-	})
+	expect(msg).toContain("--help");
+	expect(msg).toContain("help message");
+	expect(msg).not.toContain("npm done");
+	expect(msg).not.toContain("error occurred")
 })
