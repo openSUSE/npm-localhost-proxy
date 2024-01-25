@@ -155,16 +155,13 @@ export class Service {
 	}
 
 	public stop(): Promise<void> {
-		return new Promise((resolved, rejected) => {
+		return new Promise<void>((resolved, rejected) => {
 			this.server.close(err => {
 				if (err)
 					rejected(err);
-				else
-					resolved();
-			});
-
-			return null;
-		});
+				resolved();
+			})
+		})
 	}
 
 	constructor(requestHandler: registry.RequestHandler) {

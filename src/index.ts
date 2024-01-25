@@ -74,6 +74,15 @@ function configureNpmToSpecificLocalhostPort(service:Service, port:number|Promis
 	});
 }
 
+function cleanupNpmLocalhostConfig(): Promise<void> {
+	return new Promise((accept, reject) => {
+		spawn("npm", ['config', 'delete', 'registry'])
+		.on("exit", (code) => {
+			code === 0 ? accept() : reject();
+		});
+	});
+}
+
 function runNpmInstall(): Promise<void> {
 	if (install_options.length === 0) {
 		console.log("npm install skipped");
@@ -115,8 +124,11 @@ function mainEntryFunction(): Promise<void> {
 	})
 	.catch(msg => {
 		console.log("An error occurred: " + msg);
-		process.exit(1);
-	});
+	})
+	.finally(() => {
+		return service.stop()
+		.then(cleanupNpmLocalhostConfig);
+	})
 }
 
 if (require.main === module)

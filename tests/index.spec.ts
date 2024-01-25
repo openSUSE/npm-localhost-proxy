@@ -18,7 +18,10 @@
 */
 
 import * as process from 'process'
+import { spawn } from 'child_process'
 import { mainEntryFunction } from '../src/index'
+
+const default_registry = "https://registry.npmjs.org/";
 
 function setArgsAndReturnOldArgs(args:string[]) {
 	const old_args = new Array(...process.argv);
@@ -29,8 +32,20 @@ function setArgsAndReturnOldArgs(args:string[]) {
 	return old_args;
 }
 
+async function checkRegistryRemoved() : Promise<string>{
+	return new Promise<string>((accepted) => {
+		let data = '';
+
+		const p = spawn("npm",["config", "get", "registry"], {stdio: ['ignore', 'pipe', 'ignore']});
+		p.stdout.on('data', d => data += d);
+		p.on('close', () => {
+			accepted(data);
+		})
+	})
+}
+
 it("displays usage information when called with --help", async function() {
-	let msg = '';
+	let msg = "";
 
 	const old_opts = setArgsAndReturnOldArgs(["index.js", "--help"]);
 	const console_log = jest.spyOn(console, "log").mockImplementation((message) => {
@@ -45,5 +60,20 @@ it("displays usage information when called with --help", async function() {
 	expect(msg).toContain("--help");
 	expect(msg).toContain("help message");
 	expect(msg).not.toContain("npm done");
-	expect(msg).not.toContain("error occurred")
+	expect(msg).not.toContain("error occurred");
+	expect(await checkRegistryRemoved()).toContain(default_registry);
+})
+
+it("runs npm install with nothing and exits", async function() {
+	let msg = "";
+	const console_log = jest.spyOn(console, "log").mockImplementation((message) => {
+		msg += message;
+	});
+	await mainEntryFunction();
+
+	expect(msg).not.toContain("--help");
+	expect(msg).not.toContain("help message");
+	expect(msg).toContain("npm install skipped");
+	expect(msg).toContain("error occurred");
+	expect(await checkRegistryRemoved()).toContain(default_registry);
 })
