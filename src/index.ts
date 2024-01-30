@@ -120,7 +120,6 @@ function mainEntryFunction(): Promise<void> {
 	.then(() => runNpmInstall())
 	.then(() => {
 		console.log("npm done. Shutting down proxy");
-		return service.stop()
 	})
 	.catch(msg => {
 		console.log("An error occurred: " + msg);
